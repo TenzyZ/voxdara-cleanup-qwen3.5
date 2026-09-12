@@ -1,0 +1,248 @@
+{
+  "schema_version": 1,
+  "experiment_id": "voxdara-trainv2-lora-r16a16-e2-run1",
+  "baseline_git_commit": "105114295d42f4eaa2001b1ab8b76445ad1bdc79",
+  "contract_serialization": "UTF-8; ensure_ascii=false; sort_keys=true; separators=(',', ':'); no newline; SHA-256 uppercase",
+  "model": {
+    "repository": "Qwen/Qwen3.5-0.8B",
+    "revision": "2fc06364715b967f1860aea9cf38778875588b17",
+    "architecture": "Qwen3_5ForConditionalGeneration",
+    "checkpoint_kind": "post-trained",
+    "snapshot_file_hashes": {
+      "config.json": "B90B86F35C8E6925EF74EE04D0E758F0A845C83A42089AD82BBAA948DE9B4204",
+      "tokenizer.json": "5F9E4D4901A92B997E463C1F46055088B6CCA5CA61A6522D1B9F64C4BB81CB42",
+      "tokenizer_config.json": "49E2B6E395F959F077F1E992B338919C0D4A9732FC6E613995E06557F843500C",
+      "chat_template.jinja": "273D8E0E683B885071FB17E08D71E5F2A5DDFB5309756181681DE4F5A1822D80",
+      "model.safetensors.index.json": "D8A08838A613B025EB7952ED9DB11696213E57E76A375661EF5C12F9DD5DCF4E"
+    }
+  },
+  "artifacts": {
+    "train": {
+      "path": "training/data/voxdara-cleanup-train-v2.jsonl",
+      "rows": 500,
+      "sha256": "4FD564314574228EFC1539BA55EB5019CBDA474F192F78C4134AE3F97060CFAF"
+    },
+    "eval": {
+      "path": "eval/voxdara-cleanup-eval-v1.jsonl",
+      "rows": 60,
+      "sha256": "116443FC3A6332DDB3D0250B60F02B524C745AE1836B4174D9E700783278814A"
+    },
+    "historical_base_results": {
+      "path": "benchmarks/base-qwen3.5-0.8b/results.jsonl",
+      "rows": 60,
+      "sha256": "B58598129C91449E1971495497FDE114D2CAAAC0C2B7EA6402C21F4EF32D9EFE"
+    },
+    "historical_base_summary": {
+      "path": "benchmarks/base-qwen3.5-0.8b/SUMMARY.md",
+      "sha256": "1D53280BA75B5AD47BF6331635010B145C838F9E541B83911F2C384AAE5A432C"
+    }
+  },
+  "canonical_prompt": {
+    "derive_from": "artifacts.train.messages[role=system].content",
+    "unique_prompts": 1,
+    "utf8_bytes": 481,
+    "sha256": "6BA7FD9E1EA544BA4E8BD3F5E5B974CE118EBA7B8925449E3B4399D6F1564D6D"
+  },
+  "training": {
+    "method": "BF16 16-bit LoRA SFT",
+    "quantization": "none",
+    "load_in_4bit": false,
+    "load_in_8bit": false,
+    "max_seq_length": 256,
+    "num_epochs": 2,
+    "batch_size": 2,
+    "gradient_accumulation_steps": 4,
+    "gradient_checkpointing": "unsloth",
+    "optim": "adamw_8bit",
+    "learning_rate": 0.0001,
+    "lr_scheduler_type": "linear",
+    "warmup_steps": 12,
+    "weight_decay": 0.01,
+    "bf16": true,
+    "fp16": false,
+    "random_seed": 3407,
+    "effective_data_seed": 3407,
+    "packing": false,
+    "train_on_completions": true,
+    "assistant_only_loss": false,
+    "eval_steps": 0,
+    "logging_steps": 1,
+    "report_to": [],
+    "save_strategy": "steps",
+    "save_steps": 63,
+    "max_steps": 0,
+    "effective_trainer_max_steps": -1,
+    "resume_from_checkpoint": null
+  },
+  "optimizer_arithmetic": {
+    "world_size": 1,
+    "effective_batch": 8,
+    "microbatches_per_epoch": 250,
+    "optimizer_steps_per_epoch": 63,
+    "total_optimizer_steps": 126,
+    "rounding": "ceil(rows/batch_size), then ceil(microbatches/gradient_accumulation_steps), multiplied by epochs"
+  },
+  "lora": {
+    "rank": 16,
+    "alpha": 16,
+    "dropout": 0,
+    "targets": ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+    "bias": "none",
+    "use_rslora": false,
+    "finetune_vision_layers": false,
+    "target_scope": "model.language_model.layers.*; complete module suffix; exclude vision and MTP",
+    "expected_modules": 96,
+    "expected_trainable_parameters": 6389760,
+    "expected_vision_matches": 0,
+    "expected_mtp_matches": 0,
+    "deltanet_projection_targets": false
+  },
+  "loss_masking": {
+    "policy": "installed Studio apply_completion_masking; installed Zoo train_on_responses_only; assistant scaffold included",
+    "train_on_completions": true,
+    "assistant_only_loss": false,
+    "change_template": false,
+    "expected_rendered_mean_tokens": 137.146,
+    "expected_supervised_mean_tokens": 17.102,
+    "ideal_answer_only_mean_tokens": 13.102,
+    "expected_max_rendered_tokens": 255,
+    "expected_fully_masked_rows": 0,
+    "expected_prefix_mismatches": 0,
+    "expected_supervision_leaks": 0,
+    "expected_raw_assistant_mask_nonzero_rows": 0
+  },
+  "selection": {
+    "validation": "none",
+    "early_stopping": "none",
+    "eval_v1_prohibited_for": ["training", "validation", "early_stopping", "checkpoint_selection", "epoch_selection", "learning_rate_selection", "hyperparameter_selection", "expected_answer_modification"],
+    "diagnostic_checkpoint_step": 63,
+    "diagnostic_checkpoint_eval_v1_allowed": false,
+    "candidate": "final_adapter",
+    "candidate_step": 126,
+    "selection_basis": "preregistered final step; never Eval v1"
+  },
+  "benchmark": {
+    "generation": {
+      "temperature": 0,
+      "top_p": 0.8,
+      "top_k": 20,
+      "min_p": 0,
+      "presence_penalty": 0,
+      "repetition_penalty": 1.0,
+      "max_tokens": 256
+    },
+    "enable_thinking": false,
+    "one_case_per_request": true,
+    "sequential": true,
+    "fresh_context": true,
+    "conversation_history": "none",
+    "transport": "installed Studio OpenAI-compatible POST /v1/chat/completions; top-level extensions; stream=false; enable_tools=false; enabled_tools=[]",
+    "local_endpoints_only": true,
+    "redirects_allowed": false,
+    "ambient_proxies_allowed": false,
+    "serving_identity": "required operator-supplied provenance; request model label is informational in Studio; record response model; no claim that labels prove loaded checkpoint bytes",
+    "comparable_pair": "new untouched Base and preregistered final LoRA; same contract, runner hash, and serving runtime",
+    "historical_provenance": "incomplete; serialization, serving runtime, revision and exact prompt usage not fully provable; preserve historical results separately",
+    "historical_exact_matches": 3,
+    "historical_legacy_constraint_passes": 31,
+    "historical_api_errors": 0,
+    "historical_mean_latency_seconds": 1.36238,
+    "latency_p95": "nearest-rank ceil(0.95*n); includes failed requests when latency recorded",
+    "truncation": "finish_reason=length; missing or unsupported finish reason is an API error"
+  },
+  "scoring": {
+    "exact_match": "output.strip() == expected.strip(); case sensitive",
+    "must_preserve": "case-insensitive literal substring; unchanged for both scorers",
+    "legacy_constraint_pass": "all must_preserve and no case-insensitive literal must_not_contain substring",
+    "boundary_constraint_pass": "same must_preserve; forbidden P uses (?<![A-Za-z0-9]) + re.escape(P) + (?![A-Za-z0-9]), re.IGNORECASE",
+    "constraint_pass": "legacy_constraint_pass; retained historical meaning",
+    "legacy_false_negative_marker": "LEGACY_FALSE_NEGATIVE",
+    "expected_gold_legacy": 59,
+    "expected_gold_boundary": 60,
+    "expected_passthrough_legacy": 38,
+    "expected_passthrough_boundary": 38,
+    "semantic_review": "human only; mechanical pass is not semantic correctness"
+  },
+  "acceptance": {
+    "scope": "experiment only; not production release",
+    "PASS": {
+      "outputs_eq": 60, "api_errors_eq": 0, "truncations_eq": 0,
+      "boundary_constraints_min": 39, "semantic_acceptable_min": 30,
+      "self_correction_min": 8, "technical_preservation_min": 3,
+      "language_aggregate_min": 12, "minimal_change_min": 7,
+      "blind_paired_wins_min": 12, "genuine_regressions_max": 2,
+      "p95_seconds_max": 4.5, "p95_base_ratio_max": 1.5, "critical_failures_eq": 0
+    },
+    "PARTIAL": {
+      "api_errors_eq": 0, "truncations_eq": 0, "critical_failures_eq": 0,
+      "boundary_constraints_min": 39, "semantic_acceptable_range": [24, 29],
+      "self_correction_range": [6, 7], "technical_preservation_min": 2,
+      "language_aggregate_min": 9, "minimal_change_min": 6,
+      "blind_paired_wins_min": 8, "genuine_regressions_max": 2,
+      "p95_seconds_max": 6, "p95_base_ratio_max": 2
+    },
+    "FAIL_any": {
+      "critical_failures_min": 1, "api_errors_min": 1, "truncations_min": 1,
+      "boundary_constraints_max": 38, "semantic_acceptable_max": 23,
+      "self_correction_max": 5, "technical_preservation_max": 1,
+      "language_aggregate_max": 8, "minimal_change_max": 5,
+      "blind_paired_wins_max": 7, "genuine_regressions_min": 3
+    },
+    "category_denominators": {
+      "self_correction": 15, "technical_preservation": 6,
+      "language_aggregate": 23, "minimal_change": 10
+    },
+    "language_categories": ["romanized_nepali", "romanized_hindi", "code_switching"],
+    "unclassified": "threshold combinations not covered by PASS/PARTIAL/FAIL require human decision; do not infer PASS"
+  },
+  "critical_failures": [
+    "DEVANAGARI_CONVERSION", "ANSWERED_DICTATED_QUESTION", "REFUSAL_OR_ASSISTANT_META_COMMENTARY",
+    "CLAIMED_COMMAND_EXECUTION", "INVENTED_FACT", "INVENTED_PROPER_NOUN", "MEANING_CHANGING_DELETION",
+    "COMMAND_CORRUPTION_OR_DELETION", "PATH_CORRUPTION_OR_DELETION", "URL_CORRUPTION_OR_DELETION",
+    "FILENAME_CORRUPTION_OR_DELETION", "NUMBER_CORRUPTION_OR_DELETION", "MODEL_ID_CORRUPTION_OR_DELETION",
+    "ESSENTIAL_TECHNICAL_CONTENT_CORRUPTION_OR_DELETION"
+  ],
+  "launch_gate": {
+    "gpu_name_contains": "RTX 3050",
+    "total_vram_gib_approximately": 6,
+    "minimum_free_vram_gib": 4.0,
+    "compute_capability": [8, 6],
+    "bf16_required": true,
+    "measure_immediately_before_launch": true,
+    "close_applications_automatically": false,
+    "preflight_is_training_authorization": false
+  },
+  "output": {
+    "run_id": "voxdara-trainv2-lora-r16a16-e2-run1",
+    "runs_root": "experiments/train-run-v1/runs",
+    "preflight_filename": "preflight.json",
+    "studio_output_identity": "voxdara-trainv2-lora-r16a16-e2-run1",
+    "overwrite": false
+  },
+  "runtime": {
+    "python": "3.13.14",
+    "cuda": "13.0",
+    "effective_transformers_tier": "530",
+    "outer_versions": {
+      "torch": "2.11.0+cu130", "transformers": "5.5.0", "trl": "0.23.1", "peft": "0.18.1",
+      "unsloth": "2026.9.4", "unsloth_zoo": "2026.9.3", "bitsandbytes": "0.50.2",
+      "accelerate": "1.15.0", "datasets": "4.3.0", "xformers": "0.0.35"
+    },
+    "effective_versions": {
+      "torch": "2.11.0+cu130", "transformers": "5.3.0", "trl": "0.23.1", "peft": "0.18.1",
+      "unsloth": "2026.9.4", "unsloth_zoo": "2026.9.3", "bitsandbytes": "0.50.2",
+      "accelerate": "1.15.0", "datasets": "4.3.0", "xformers": "0.0.35"
+    },
+    "installed_source_hashes": {
+      "studio/backend/utils/transformers_version.py": "158281F3CA63C112485EF424E46BEA925D912C7F6D3F5D6B5B53A0D635396F22",
+      "studio/backend/core/training/worker.py": "9662C63ABBABB1969BFB22AB3BB0B8BCF8B91263321530A5E2011BBD9300ADAD",
+      "studio/backend/core/training/trainer.py": "DBA807AC26CBD8C416785D23CDC278D50792BB2545125806AD6A50CB39833CF0",
+      "studio/backend/utils/datasets/chat_templates.py": "2501D305ADCC666AA13E0F6C1A15D6E9751650ED44C2153A9F65D50652BF54AE",
+      "studio/backend/utils/datasets/completion_masking.py": "2A98441C943C087C0FCC50066F88C7DB63C7FD80A6CC11AE408480B4411CD38D",
+      "unsloth_zoo/dataset_utils.py": "0CC11D3E63AB987F9F08AF2979BBE5FA9696AF6A399D5156D197CCCA56D00D78",
+      "studio/backend/models/inference.py": "A4571C9C9B4F92DCDC7B544E9338F39F09090E4EF85B21555230D1104D64E34D",
+      "studio/backend/routes/inference.py": "DE8F7093C239E5CAB8BCAED7BDBC8FD86949CD3CBA99A763EC4C43C03A57F2C5"
+    },
+    "inspection_policy": "offline cached tokenizer and tensor headers only; bypass Zoo package initializer/cache-write probes; resolve installed Studio tier without activating installer/repair; no full model/adapter/trainer construction"
+  }
+}
