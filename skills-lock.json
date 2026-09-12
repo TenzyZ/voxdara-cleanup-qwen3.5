@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "skills": {
+    "huggingface-community-evals": {
+      "source": "huggingface/skills",
+      "sourceType": "github",
+      "skillPath": "skills/huggingface-community-evals/SKILL.md",
+      "computedHash": "51b42948064ee943df2995af543c7d011d0786eb8ee04392eb9ea60e359833b2"
+    },
+    "huggingface-llm-trainer": {
+      "source": "huggingface/skills",
+      "sourceType": "github",
+      "skillPath": "skills/huggingface-llm-trainer/SKILL.md",
+      "computedHash": "8be6c56dfe7705d44fecb2707aaae2540f93281ef72580a2c2ab1a961b476af9"
+    },
+    "trl-training": {
+      "source": "huggingface/skills",
+      "sourceType": "github",
+      "skillPath": "skills/trl-training/SKILL.md",
+      "computedHash": "fe269c4624638e85b9bfece55cf55b978d52b908d0f6e611626fa9445d2052f7"
+    }
+  }
+}

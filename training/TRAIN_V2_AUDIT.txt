@@ -1,0 +1,97 @@
+==============================================
+ VOXDARA TRAIN V2 QUALITY AUDIT
+==============================================
+
+Source Train v1 SHA-256: 7CFAFF40E46DD23097C2BFC6AF74B3EC126C58EFEF37A29E149E834BE37E0E37
+Frozen Eval v1 SHA-256:  116443FC3A6332DDB3D0250B60F02B524C745AE1836B4174D9E700783278814A
+
+Train v2 rows:                       500
+Changed Train rows:                  102, 169, 306, 308, 325, 384, 385, 418
+Exact duplicate Train inputs:        0
+Exact Train<->Eval leakage:          0
+Train<->Eval review candidates:      0
+Train<->Train strong candidates:     13
+Output-sanity issues:                0
+
+==============================================
+ TRAIN<->EVAL CANDIDATES
+==============================================
+
+PASS: No Train<->Eval candidates crossed review thresholds.
+
+
+==============================================
+ TRAIN<->TRAIN STRONG CANDIDATES
+==============================================
+
+[1] Rows 118 <-> 218
+Semantic: 0.9827  Lexical: 0.7872  Jaccard: 0.7143
+A: yo Qwen3.5-2B model ho haina Qwen3.5-0.8B model ho
+B: yo model Qwen3.5-4B ho haina Qwen3.5-0.8B ho
+----------------------------------------------------------------------
+[2] Rows 189 <-> 389
+Semantic: 0.9700  Lexical: 0.9159  Jaccard: 0.7778
+A: romanized Nepali lai Devanagari ma convert nagara
+B: Romanized Nepali ra Hindi lai Devanagari ma convert nagara
+----------------------------------------------------------------------
+[3] Rows 123 <-> 223
+Semantic: 0.9666  Lexical: 0.8000  Jaccard: 0.5000
+A: meeting do baje hai nahi dhai baje hai
+B: meeting chhe baje hai nahi saadhe chhe baje hai
+----------------------------------------------------------------------
+[4] Rows 208 <-> 408
+Semantic: 0.9650  Lexical: 0.8000  Jaccard: 0.5000
+A: use Qwen3.5-4B no sorry keep Qwen3.5-0.8B
+B: use Qwen3.5-2B actually no keep Qwen3.5-0.8B
+----------------------------------------------------------------------
+[5] Rows 226 <-> 326
+Semantic: 0.8696  Lexical: 0.9615  Jaccard: 0.6667
+A: model 2B hai nahi 0.8B hai
+B: model 4B hai nahi 0.8B hai
+----------------------------------------------------------------------
+[6] Rows 184 <-> 479
+Semantic: 0.9542  Lexical: 0.8125  Jaccard: 0.8571
+A: use --learning_rate 2e-4 and --lora_r 16
+B: use --learning_rate 2e-4 --lora_r 16 and --lora_alpha 16
+----------------------------------------------------------------------
+[7] Rows 40 <-> 408
+Semantic: 0.9513  Lexical: 0.3855  Jaccard: 0.5714
+A: use Qwen3.5-0.8B no actually Qwen3-1.7B
+B: use Qwen3.5-2B actually no keep Qwen3.5-0.8B
+----------------------------------------------------------------------
+[8] Rows 112 <-> 312
+Semantic: 0.9410  Lexical: 0.9130  Jaccard: 0.5556
+A: meeting char baje ho haina sorry paanch baje ho
+B: meeting chha baje ho haina sorry saat baje ho
+----------------------------------------------------------------------
+[9] Rows 111 <-> 411
+Semantic: 0.9279  Lexical: 0.9053  Jaccard: 0.8000
+A: ma bholi office janxu haina ghar bata kaam garxu
+B: ma aaja office janxu haina ghar bata kaam garxu
+----------------------------------------------------------------------
+[10] Rows 181 <-> 381
+Semantic: 0.7003  Lexical: 0.9065  Jaccard: 0.5556
+A: open https://huggingface.co/Qwen/Qwen3.5-0.8B and check the model card
+B: open https://huggingface.co/Qwen/Qwen3.5-0.8B and check the files tab
+----------------------------------------------------------------------
+[11] Rows 128 <-> 328
+Semantic: 0.7601  Lexical: 0.9038  Jaccard: 0.7778
+A: kal deploy karna hai nahi aaj sirf test karna hai
+B: aaj deploy karna hai nahi aaj sirf smoke test karna hai
+----------------------------------------------------------------------
+[12] Rows 125 <-> 225
+Semantic: 0.8295  Lexical: 0.9024  Jaccard: 0.5000
+A: port 5000 use karo actually 8000 use karo
+B: port 4200 use karo actually 4300 use karo
+----------------------------------------------------------------------
+[13] Rows 433 <-> 442
+Semantic: 0.8911  Lexical: 0.9009  Jaccard: 0.2222
+A: yo backup C:\Projects\Voxdara\training\backup ma rakha
+B: is backup ko C:\Projects\Voxdara\training\backup me rakho
+----------------------------------------------------------------------
+
+==============================================
+ OUTPUT SANITY
+==============================================
+
+PASS: No output-sanity issues found.

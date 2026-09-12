@@ -1,0 +1,23 @@
+# Python generated files
+__pycache__/
+*.py[cod]
+
+# Unsloth generated compiler cache
+/unsloth_compiled_cache/
+
+# Local Python environments
+.venv/
+venv/
+
+# Local secrets
+.env
+.env.*
+!.env.example
+
+# Common local/test caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Logs
+*.log
