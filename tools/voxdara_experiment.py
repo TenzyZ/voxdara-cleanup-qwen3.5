@@ -32,6 +32,11 @@ import urllib.request
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CONTRACT = ROOT / "experiments/train-run-v1/contract.json"
 APPROVED_CONTRACT_SHA256 = "1E6A4296A87541E119D6C73B2316CB6D421DFE2AFC85F88D3DF2733AE9886678"
+ALLOWED_MODULE = re.compile(
+    r"model\.language_model\.layers\.\d+\.(?:"
+    r"self_attn\.(?:q_proj|k_proj|v_proj|o_proj)|"
+    r"mlp\.(?:gate_proj|up_proj|down_proj))"
+)
 Json = dict[str, Any]
 
 
@@ -291,6 +296,7 @@ def target_metadata(snapshot: Path, lora: Json) -> Json:
     return {
         "inspection": "cached tensor headers; no full model or adapter instantiated",
         "modules": len(selected),
+        "modules_sha256": digest(canonical_bytes(sorted(name.removesuffix(".weight") for name in selected))),
         "trainable_parameters": sum(lora["rank"] * sum(m["shape"]) for m in selected.values()),
         "vision_matches": sum("visual" in n or "vision" in n for n in selected),
         "mtp_matches": sum("mtp" in n.lower() for n in selected),
@@ -299,8 +305,70 @@ def target_metadata(snapshot: Path, lora: Json) -> Json:
     }
 
 
+def classify_adapter(modules: list[str], trainable: dict[str, int]) -> Json:
+    """Measure collected LoRA layers and requires_grad parameters without Torch."""
+    modules = [name.removeprefix("base_model.model.") for name in modules]
+    owners = set(modules)
+    non_lora = 0
+    for name, count in trainable.items():
+        match = re.fullmatch(r"(.+)\.lora_[AB]\.[^.]+\.weight",
+                             name.removeprefix("base_model.model."))
+        if match is None or match[1] not in owners:
+            non_lora += count
+    return {
+        "modules": len(modules), "trainable_parameters": sum(trainable.values()),
+        "modules_sha256": digest(canonical_bytes(sorted(modules))),
+        "mtp_matches": sum(bool(re.search(r"(^|\.)mtp(\.|$)", name)) for name in modules),
+        "vision_matches": sum(bool(re.search(
+            r"(^|\.)(visual|vision_tower|vision_model|visual_tokenizer)(\.|$)", name))
+            for name in modules),
+        "foreign_modules": sum(ALLOWED_MODULE.fullmatch(name) is None for name in modules),
+        "non_lora_trainable": non_lora,
+    }
+
+
+def live_target_resolution(snapshot: Path, lora: Json, site: Path) -> Json:
+    """Construct fresh, local meta-device PEFT models; never load checkpoint shards."""
+    import types
+    import torch
+    import transformers
+    from peft import LoraConfig, get_peft_model
+    from peft.tuners.lora.layer import LoraLayer
+
+    # As with Studio masking, bypass the installed Zoo package initializer.
+    package_name = "voxdara_installed_peft"
+    package = types.ModuleType(package_name)
+    package.__path__ = [str(site / "unsloth_zoo")]
+    sys.modules[package_name] = package
+    zoo = load_installed_module(package_name + ".peft_utils", site / "unsloth_zoo/peft_utils.py")
+    config = transformers.AutoConfig.from_pretrained(str(snapshot), local_files_only=True,
+                                                     trust_remote_code=False)
+    cls = getattr(transformers, config.architectures[0])
+    result = {}
+    for resolution in ["regex", "list"]:
+        with torch.device("meta"):
+            base = cls._from_config(config)
+            targets = list(lora["targets"])
+            if resolution == "regex":
+                targets = zoo.get_peft_regex(
+                    base, finetune_vision_layers=lora["finetune_vision_layers"],
+                    finetune_language_layers=True, finetune_attention_modules=True,
+                    finetune_mlp_modules=True, target_modules=targets)
+            model = get_peft_model(base, LoraConfig(
+                r=lora["rank"], lora_alpha=lora["alpha"], lora_dropout=lora["dropout"],
+                bias=lora["bias"], use_rslora=lora["use_rslora"],
+                target_modules=targets, task_type="CAUSAL_LM"))
+        require(all(p.device.type == "meta" for p in model.parameters()),
+                "RUNTIME_INSPECTION_UNAVAILABLE")
+        modules = [name for name, module in model.named_modules() if isinstance(module, LoraLayer)]
+        trainable = {name: p.numel() for name, p in model.named_parameters() if p.requires_grad}
+        result[resolution] = classify_adapter(modules, trainable)
+        del model, base
+    return result
+
+
 def runtime_evidence(validated: Json, snapshot_override: Path | None = None) -> Json:
-    """Inspect installed code/tokenizer only. Never call activation/repair APIs.
+    """Inspect installed code/tokenizer and meta adapters. Never activate/repair.
 
     Zoo's package initializer probes cache writability, so load its installed
     dataset utility file directly. Its return_function=True path needs no
@@ -392,6 +460,8 @@ def runtime_evidence(validated: Json, snapshot_override: Path | None = None) -> 
                 "ASSISTANT_MASK_INSPECTION_UNAVAILABLE")
         raw_masks += any(raw["assistant_masks"])
     targets = target_metadata(snapshot, c["lora"])
+    targets["live"] = live_target_resolution(snapshot, c["lora"], site)
+    targets["live_peft_resolution"] = "VERIFIED"
     return {
         "python": sys.version.split()[0], "cuda": torch.version.cuda,
         "outer_versions": outer, "effective_versions": effective,
@@ -446,8 +516,15 @@ def launch_gates(c: Json, runtime: Json) -> list[Json]:
         and abs(mask.get("mean_rendered_tokens", 0) - expected_mask["expected_rendered_mean_tokens"]) < 1e-6
         and abs(mask.get("mean_supervised_tokens", 0) - expected_mask["expected_supervised_mean_tokens"]) < 1e-6, mask)
     targets = runtime.get("target_resolution", {})
+    keys = ["modules", "trainable_parameters", "vision_matches", "mtp_matches"]
+    live = [targets.get("live", {}).get(name, {}) for name in ["regex", "list"]]
     add("TARGET_MODULE_MISMATCH", all(targets.get(k) == c["lora"]["expected_" + k] for k in
-        ["modules", "trainable_parameters", "vision_matches", "mtp_matches"]), targets)
+        keys) and targets.get("live_peft_resolution") == "VERIFIED"
+        and bool(targets.get("modules_sha256"))
+        and all(all(resolution.get(k) == c["lora"]["expected_" + k] for k in keys)
+                and resolution.get("modules_sha256") == targets["modules_sha256"]
+                and resolution.get("foreign_modules") == 0
+                and resolution.get("non_lora_trainable") == 0 for resolution in live), targets)
     return gates
 
 
