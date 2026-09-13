@@ -61,3 +61,20 @@ Do not modify, add, remove, or rewrite examples in Train v2.
 Any later intentional dataset change must become Train v3 with a new validation cycle and SHA-256.
 
 Frozen Eval v1 must never be used as training data.
+
+## Live PEFT Adapter Gate v1
+
+The 103 checkpoint-index suffix matches comprise 96 intended language projections
+and seven MTP projections. The verified Studio Transformers 5.3.0 runtime does not
+instantiate those MTP modules: both installed Unsloth-regex and raw PEFT-list
+resolution produce 96 live LoRA layers and 6,389,760 trainable parameters.
+
+Preflight now checks both live resolutions against the exact seven authorized
+language projection paths, with zero MTP, vision, foreign, or non-LoRA trainable
+matches. This protects against silent Transformers, Unsloth, or PEFT changes.
+
+Approved Option A permits local meta-device adapter construction for evidence
+only, despite contract v1's inspection-policy prose prohibiting model/adapter
+construction. `contract.json` remains byte-identical with its approved canonical
+hash. No checkpoint weights are loaded, no adapter is saved, and no Trainer or
+training occurs. Preflight PASS is evidence only; training remains unauthorized.

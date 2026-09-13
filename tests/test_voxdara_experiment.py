@@ -154,6 +154,11 @@ class ExperimentTests(unittest.TestCase):
         self.assertEqual(t["report_to"], [])
 
     def mocked_runtime(self, free=5):
+        targets = {k: self.c["lora"]["expected_" + k] for k in
+                   ["modules", "trainable_parameters", "vision_matches", "mtp_matches"]}
+        targets["modules_sha256"] = vx.digest(vx.canonical_bytes(sorted(
+            f"model.language_model.layers.{i}.mlp.up_proj" for i in range(96))))
+        live = {**targets, "foreign_modules": 0, "non_lora_trainable": 0}
         return {
             **{k: self.c["runtime"][k] for k in ["python", "cuda", "outer_versions", "effective_versions", "effective_transformers_tier"]},
             "gpu": {"available": True, "name": "NVIDIA GeForce RTX 3050 6GB Laptop GPU", "free_gib": free,
@@ -161,7 +166,8 @@ class ExperimentTests(unittest.TestCase):
             "masking": {"rows": 500, "max_rendered_tokens": 255, "mean_rendered_tokens": 137.146,
                         "mean_supervised_tokens": 17.102, "fully_masked_rows": 0, "prefix_mismatches": 0,
                         "supervision_leaks": 0, "raw_assistant_mask_nonzero_rows": 0},
-            "target_resolution": {"modules": 96, "trainable_parameters": 6389760, "vision_matches": 0, "mtp_matches": 0},
+            "target_resolution": {**targets, "live_peft_resolution": "VERIFIED",
+                                  "live": {"regex": dict(live), "list": dict(live)}},
         }
 
     def report(self, free=5):
@@ -213,6 +219,146 @@ class ExperimentTests(unittest.TestCase):
             failures = [g["reason"] for g in vx.launch_gates(self.c, runtime) if not g["passed"]]
             self.assertIn(reason, failures)
 
+    def test_exact_adapter_path_allowlist(self):
+        for component, leaves in [("self_attn", ["q_proj", "k_proj", "v_proj", "o_proj"]),
+                                  ("mlp", ["gate_proj", "up_proj", "down_proj"])]:
+            for leaf in leaves:
+                name = f"model.language_model.layers.0.{component}.{leaf}"
+                self.assertIsNotNone(vx.ALLOWED_MODULE.fullmatch(name), name)
+        for name in ["mtp.layers.0.self_attn.q_proj", "mtp.layers.0.mlp.down_proj",
+                     "model.visual.blocks.0.mlp.linear_fc1",
+                     "model.language_model.layers.0.self_attn.some_new_proj",
+                     "model.language_model.layers.0.mlp.some_new_proj",
+                     "model.language_model.layers.0.self_attn.q_proj.extra",
+                     "other.model.language_model.layers.0.self_attn.q_proj"]:
+            self.assertIsNone(vx.ALLOWED_MODULE.fullmatch(name), name)
+
+    def test_live_adapter_classification_happy_path(self):
+        modules = [f"model.language_model.layers.{i}.mlp.up_proj" for i in range(96)]
+        total = self.c["lora"]["expected_trainable_parameters"]
+        for prefix in ["", "base_model.model."]:
+            names = [prefix + name for name in modules]
+            trainable = {f"{name}.lora_{side}.default.weight": total // (2 * len(names))
+                         for name in names for side in ["A", "B"]}
+            evidence = vx.classify_adapter(names, trainable)
+            self.assertEqual(evidence, {"modules": 96, "trainable_parameters": 6389760,
+                                       "modules_sha256": vx.digest(vx.canonical_bytes(sorted(modules))),
+                                       "mtp_matches": 0, "vision_matches": 0,
+                                       "foreign_modules": 0, "non_lora_trainable": 0})
+            runtime = self.mocked_runtime()
+            runtime["target_resolution"]["live"] = {"regex": evidence, "list": evidence}
+            result = vx.finish_preflight(
+                {"gates": vx.launch_gates(self.c, runtime)}, self.path / "run", True)
+            self.assertEqual(result["status"], "PASSED")
+            self.assertFalse(result["training_authorized"])
+            self.assertFalse((self.path / "run").exists())
+
+    def test_allowed_identity_substitutions_fail_closed(self):
+        # Shapes verified from the frozen model's layer-3 checkpoint headers.
+        shapes = {"mlp.gate_proj": (3584, 1024), "mlp.up_proj": (3584, 1024),
+                  "mlp.down_proj": (1024, 3584), "self_attn.q_proj": (4096, 1024),
+                  "self_attn.k_proj": (512, 1024), "self_attn.v_proj": (512, 1024),
+                  "self_attn.o_proj": (1024, 2048)}
+        modules = {f"model.language_model.layers.{layer}.{leaf}": shape
+                   for layer in range(24) for leaf, shape in shapes.items()
+                   if leaf.startswith("mlp.") or layer % 4 == 3}
+        def classify(replacements):
+            names = [replacements.get(name, name) for name in modules]
+            trainable = {
+                f"base_model.model.{replacements.get(name, name)}.lora_{side}.default.weight":
+                    self.c["lora"]["rank"] * dimension
+                for name, shape in modules.items() for side, dimension in zip(["B", "A"], shape)
+            }
+            return vx.classify_adapter(["base_model.model." + name for name in names], trainable)
+        expected = classify({})
+        single = {"model.language_model.layers.0.mlp.up_proj":
+                  "model.language_model.layers.99.mlp.up_proj"}
+        renested = {f"model.language_model.layers.3.{leaf}":
+                    f"model.language_model.layers.24.{leaf}" for leaf in shapes}
+        for label, replacements in [("single_identity", single), ("seven_renested_mtp", renested)]:
+            evidence = classify(replacements)
+            self.assertEqual({k: v for k, v in evidence.items() if k != "modules_sha256"},
+                             {"modules": 96, "trainable_parameters": 6389760,
+                              "mtp_matches": 0, "vision_matches": 0,
+                              "foreign_modules": 0, "non_lora_trainable": 0})
+            self.assertNotEqual(evidence["modules_sha256"], expected["modules_sha256"])
+            for resolution in ["regex", "list"]:
+                with self.subTest(case=label, resolution=resolution):
+                    runtime = self.mocked_runtime()
+                    targets = runtime["target_resolution"]
+                    targets["modules_sha256"] = expected["modules_sha256"]
+                    targets["live"] = {"regex": dict(expected), "list": dict(expected)}
+                    targets["live"][resolution] = evidence
+                    self.assertReason("TARGET_MODULE_MISMATCH", vx.finish_preflight,
+                                      {"gates": vx.launch_gates(self.c, runtime)}, self.path / "run", True)
+                    targets["live"][resolution] = expected
+                    result = vx.finish_preflight(
+                        {"gates": vx.launch_gates(self.c, runtime)}, self.path / "run", True)
+                    self.assertEqual(result["status"], "PASSED")
+
+    def test_live_adapter_contamination_fails_closed(self):
+        modules = [f"model.language_model.layers.{i}.mlp.up_proj" for i in range(103)]
+        total = self.c["lora"]["expected_trainable_parameters"]
+        cases = [(f"count_{count}", modules[:count], total, {}, 0, 0, 0)
+                 for count in [95, 97, 103]]
+        for name, mtp, vision in [
+            ("mtp.layers.0.self_attn.q_proj", 1, 0),
+            ("model.mtp.layers.0.mlp.down_proj", 1, 0),
+            ("model.visual.blocks.0.mlp.linear_fc1", 0, 1),
+            ("model.vision_tower.blocks.0.q_proj", 0, 1),
+            ("model.vision_model.blocks.0.q_proj", 0, 1),
+            ("model.visual_tokenizer.blocks.0.q_proj", 0, 1),
+            ("model.language_model.other.q_proj", 0, 0),
+            ("model.language_model.layers.0.self_attn.some_new_proj", 0, 0),
+        ]:
+            cases.append((name, modules[:95] + [name], total, {}, mtp, vision, 1))
+        cases.extend([
+            ("wrong_total", modules[:96], total + 1, {}, 0, 0, 0),
+            ("non_lora", modules[:96], total,
+             {"base_model.model.model.language_model.embed_tokens.weight": 16}, 0, 0, 0),
+            ("misleading_lora_name", modules[:96], total,
+             {"base_model.model.model.language_model.embed_tokens.lora_A.default.weight": 16},
+             0, 0, 0),
+        ])
+        for label, names, parameter_total, extra, mtp, vision, foreign in cases:
+            names = ["base_model.model." + name for name in names]
+            lora_total = parameter_total - sum(extra.values())
+            trainable = {f"{name}.lora_A.default.weight": lora_total // len(names) for name in names}
+            trainable[f"{names[0]}.lora_A.default.weight"] += lora_total % len(names)
+            evidence = vx.classify_adapter(names, {**trainable, **extra})
+            self.assertEqual(evidence["modules"], len(names))
+            self.assertEqual(evidence["trainable_parameters"], parameter_total)
+            self.assertEqual(evidence["mtp_matches"], mtp)
+            self.assertEqual(evidence["vision_matches"], vision)
+            self.assertEqual(evidence["foreign_modules"], foreign)
+            self.assertEqual(evidence["non_lora_trainable"], sum(extra.values()))
+            for resolution in ["regex", "list"]:
+                with self.subTest(case=label, resolution=resolution):
+                    runtime = self.mocked_runtime()
+                    runtime["target_resolution"]["live"][resolution] = evidence
+                    destination = self.path / "run"
+                    self.assertReason("TARGET_MODULE_MISMATCH", vx.finish_preflight,
+                                      {"gates": vx.launch_gates(self.c, runtime)}, destination, True)
+                    self.assertFalse(destination.exists())
+
+    def test_missing_live_adapter_evidence_fails_closed(self):
+        for missing in ["regex", "list", "live_peft_resolution", "modules_sha256",
+                        "regex_digest", "list_digest", "all_digests"]:
+            runtime = self.mocked_runtime()
+            targets = runtime["target_resolution"]
+            if missing in ["live_peft_resolution", "modules_sha256"]:
+                del targets[missing]
+            elif missing.endswith("_digest"):
+                del targets["live"][missing.removesuffix("_digest")]["modules_sha256"]
+            elif missing == "all_digests":
+                del targets["modules_sha256"]
+                for resolution in targets["live"].values():
+                    del resolution["modules_sha256"]
+            else:
+                del targets["live"][missing]
+            self.assertReason("TARGET_MODULE_MISMATCH", vx.finish_preflight,
+                              {"gates": vx.launch_gates(self.c, runtime)}, self.path / "run", True)
+
     def test_cached_tensor_headers_reject_incomplete_or_wrong_precision(self):
         shard = "model.safetensors"
         name = "model.language_model.layers.0.self_attn.q_proj.weight"
@@ -225,6 +371,8 @@ class ExperimentTests(unittest.TestCase):
         result = vx.target_metadata(self.path, self.c["lora"])
         self.assertEqual(result["modules"], 1)
         self.assertEqual(result["trainable_parameters"], 192)
+        self.assertEqual(result["modules_sha256"],
+                         vx.digest(vx.canonical_bytes([name.removesuffix(".weight")])))
         complete = (self.path / shard).read_bytes()
         (self.path / shard).write_bytes(complete[:-1])
         self.assertReason("MODEL_CACHE_INCOMPLETE", vx.target_metadata, self.path, self.c["lora"])
