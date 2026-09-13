@@ -1,0 +1,6 @@
+{
+  "name": "voxdara-review",
+  "version": "1.0.0",
+  "description": "Independent, read-only Voxdara review with validated findings and a bounded Codex repair handoff.",
+  "author": {"name": "Voxdara"}
+}
