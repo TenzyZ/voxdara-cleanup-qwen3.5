@@ -99,6 +99,14 @@ def run_directory(root: Path, c: Json, suffix: str = "") -> Path:
     return inside(root, relative + ("/" + suffix if suffix else ""))
 
 
+def resolve_destination(root: Path, c: Json, default_suffix: str, custom: Path | None = None) -> Path:
+    if custom is None:
+        return run_directory(root, c, default_suffix)
+    path = (root / custom).resolve() if not custom.is_absolute() else custom.resolve()
+    require(path.is_relative_to(root.resolve()), "UNSAFE_PATH")
+    return path
+
+
 def derive_prompt(rows: list[Json]) -> str:
     prompts = set()
     for row in rows:
@@ -729,7 +737,8 @@ def compatible_results(validated: Json, directories: list[Path]) -> tuple[list[l
                         and r.get("tool_sha256") == p.get("tool_sha256") for r in rows),
                 "INCOMPATIBLE_PROVENANCE")
         require(all(r.get("error") is None and isinstance(r.get("output"), str)
-                    and r.get("finish_reason") == "stop" for r in rows), "REVIEW_INPUT_OPERATIONAL_FAILURE")
+                    and r.get("finish_reason") in ["stop", "length"] for r in rows),
+                "REVIEW_INPUT_OPERATIONAL_FAILURE")
         sets.append(rows)
         provenance.append(p)
     a, b = provenance
@@ -798,10 +807,14 @@ def main(argv: list[str] | None = None) -> int:
             command.add_argument("--serving-provenance", type=Path, required=True,
                                  help="operator-supplied model_repository, model_revision, model_id, role, runtime{name,versions}; LoRA adapter_sha256, candidate_step, experiment_id")
             command.add_argument("--credential-env")
+            command.add_argument("--destination", type=Path,
+                                 help="optional repository-contained destination directory")
         elif name == "blind-pack":
             command.add_argument("--base", type=Path, required=True)
             command.add_argument("--lora", type=Path, required=True)
             command.add_argument("--seed", type=int, default=3407)
+            command.add_argument("--destination", type=Path,
+                                 help="optional repository-contained destination directory")
     args = parser.parse_args(argv)
     try:
         v = validate_contract(args.contract)
@@ -815,13 +828,15 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "score":
             result = aggregate(v["eval"], read_jsonl(args.results))
         elif args.command == "benchmark":
+            destination = resolve_destination(ROOT, c, "benchmarks/" + args.role, args.destination)
             result = benchmark(v, args.endpoint, args.model_id, args.role,
-                               read_json(args.serving_provenance), run_directory(ROOT, c, "benchmarks/" + args.role),
+                               read_json(args.serving_provenance), destination,
                                args.credential_env)
         else:
-            result = blind_pack(v, [args.base, args.lora], run_directory(ROOT, c, "blind-review"), args.seed)
+            destination = resolve_destination(ROOT, c, "blind-review", args.destination)
+            result = blind_pack(v, [args.base, args.lora], destination, args.seed)
         print(json.dumps(result, ensure_ascii=False, sort_keys=True, indent=2, allow_nan=False))
-        return int(args.command == "benchmark" and (result["api_errors"] or result["truncations"]))
+        return int(args.command == "benchmark" and bool(result["api_errors"]))
     except ExperimentError as exc:
         print(json.dumps({"status": "FAILED", "reason": exc.reason, **sanitized(exc.details)}, sort_keys=True))
     except (OSError, ValueError, KeyError, TypeError, AttributeError, ImportError, subprocess.SubprocessError):

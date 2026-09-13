@@ -2,12 +2,15 @@
 import copy
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import importlib.util
+import io
 import json
 import os
 from pathlib import Path
+import shutil
 import struct
 import tempfile
 import threading
+import time
 import unittest
 from unittest.mock import patch
 
@@ -470,8 +473,8 @@ class ExperimentTests(unittest.TestCase):
                          "http://[::1]:8888/v1/chat/completions")
         self.assertIsNone(vx.NoRedirect().redirect_request(None, None, 302, "", {}, "https://evil.test"))
 
-    def result_set(self, role):
-        path = self.path / role
+    def result_set(self, role, name=None):
+        path = self.path / (name or role)
         path.mkdir()
         identity = self.identity(role)
         tool_hash = vx.file_hash(ROOT / "tools/voxdara_experiment.py")
@@ -557,6 +560,124 @@ class ExperimentTests(unittest.TestCase):
         destination = self.path / "badhash"
         self.assertReason("INCOMPATIBLE_PROVENANCE", vx.blind_pack, self.v, [base, lora], destination, 3407)
         self.assertFalse(destination.exists())
+
+    def test_aggregation_counts_truncation_without_api_error(self):
+        results = [{"id": c["id"], "output": c["expected"], "latency_seconds": 1.0}
+                   for c in self.cases]
+        results[0]["finish_reason"] = "length"
+        results[0]["output"] = "truncated partial output"
+        summary = vx.aggregate(self.cases, results)
+        self.assertEqual(summary["cases"], 60)
+        self.assertEqual(summary["outputs"], 60)
+        self.assertEqual(summary["truncations"], 1)
+        self.assertEqual(summary["api_errors"], 0)
+
+    def test_blind_pair_accepts_valid_truncation(self):
+        base = self.result_set("base")
+        lora = self.result_set("lora")
+        base_rows = vx.read_jsonl(base / "results.jsonl")
+        base_rows[0]["finish_reason"] = "length"
+        base_rows[0]["output"] = "truncated base text"
+        (base / "results.jsonl").write_text(
+            "".join(vx.canonical_bytes(r).decode("utf-8") + "\n" for r in base_rows),
+            encoding="utf-8",
+        )
+        destination = self.path / "blind_pack_with_truncation"
+        result = vx.blind_pack(self.v, [base, lora], destination, 3407)
+        self.assertEqual(result["cases"], 60)
+        reviews = vx.read_jsonl(destination / "review/review.jsonl")
+        target = [r for r in reviews if r["id"] == base_rows[0]["id"]][0]
+        self.assertIn("truncated base text", [target["A_output"], target["B_output"]])
+
+    def test_blind_pair_rejects_api_errors_and_unsupported_finish_reasons(self):
+        # 1. Rejects operational error (error is not None)
+        base = self.result_set("base")
+        lora = self.result_set("lora")
+        base_rows = vx.read_jsonl(base / "results.jsonl")
+        base_rows[0]["error"] = {"reason": "HTTP_ERROR", "status": 500}
+        base_rows[0]["output"] = None
+        (base / "results.jsonl").write_text(
+            "".join(vx.canonical_bytes(r).decode("utf-8") + "\n" for r in base_rows),
+            encoding="utf-8",
+        )
+        dest_err = self.path / "pack_with_api_error"
+        self.assertReason("REVIEW_INPUT_OPERATIONAL_FAILURE", vx.blind_pack, self.v, [base, lora], dest_err, 3407)
+        self.assertFalse(dest_err.exists())
+
+        # 2. Rejects unsupported or missing finish reasons
+        for invalid in [None, "tool_calls", "content_filter", "error", "unknown"]:
+            with self.subTest(invalid_finish_reason=invalid):
+                tag = str(invalid)
+                b = self.result_set("base", f"base_{tag}")
+                l = self.result_set("lora", f"lora_{tag}")
+                rows = vx.read_jsonl(b / "results.jsonl")
+                rows[0]["finish_reason"] = invalid
+                (b / "results.jsonl").write_text(
+                    "".join(vx.canonical_bytes(r).decode("utf-8") + "\n" for r in rows),
+                    encoding="utf-8",
+                )
+                dest = self.path / f"pack_invalid_{tag}"
+                self.assertReason("REVIEW_INPUT_OPERATIONAL_FAILURE", vx.blind_pack, self.v, [b, l], dest, 3407)
+                self.assertFalse(dest.exists())
+
+    def test_benchmark_cli_exit_semantics(self):
+        provenance_file = self.path / "serving_base.json"
+        vx.write_json_new(provenance_file, self.identity("base"))
+        bench_root = ROOT / "tests" / f"temp_test_bench_{time.time_ns()}"
+        self.addCleanup(lambda: shutil.rmtree(bench_root, ignore_errors=True))
+
+        # 1. Truncations without API errors return exit code 0
+        def respond_truncation(body, number):
+            return {"model": body["model"], "choices": [{"finish_reason": "length",
+                    "message": {"role": "assistant", "content": "truncated text"}}]}
+        endpoint_trunc, _ = self.server(respond_truncation)
+        dest_trunc = bench_root / "truncation_bench"
+        with patch("sys.stdout", new_callable=io.StringIO):
+            code = vx.main(["benchmark", "--endpoint", endpoint_trunc, "--model-id", "serving-base",
+                            "--role", "base", "--serving-provenance", str(provenance_file),
+                            "--destination", str(dest_trunc)])
+        self.assertEqual(code, 0)
+        summary = vx.read_json(dest_trunc / "summary.json")
+        self.assertEqual(summary["truncations"], 60)
+        self.assertEqual(summary["api_errors"], 0)
+
+        # 2. API errors return exit code 1
+        def respond_error(body, number):
+            return {"error": {"message": "mock server error"}}
+        endpoint_err, _ = self.server(respond_error)
+        dest_err = bench_root / "error_bench"
+        with patch("sys.stdout", new_callable=io.StringIO):
+            err_code = vx.main(["benchmark", "--endpoint", endpoint_err, "--model-id", "serving-base",
+                                "--role", "base", "--serving-provenance", str(provenance_file),
+                                "--destination", str(dest_err)])
+        self.assertEqual(err_code, 1)
+        err_summary = vx.read_json(dest_err / "summary.json")
+        self.assertEqual(err_summary["api_errors"], 60)
+
+    def test_custom_destination_safety_and_collision_protection(self):
+        # Repository-contained relative path resolves within ROOT
+        rel = Path("experiments/train-run-v1/runs/voxdara-trainv2-lora-r16a16-e2-run1/benchmarks/eval-v1.1/base")
+        resolved = vx.resolve_destination(ROOT, self.c, "benchmarks/base", rel)
+        self.assertEqual(resolved, (ROOT / rel).resolve())
+        self.assertTrue(resolved.is_relative_to(ROOT.resolve()))
+
+        # Repository-contained absolute path resolves within ROOT
+        abs_contained = (ROOT / rel).resolve()
+        resolved_abs = vx.resolve_destination(ROOT, self.c, "benchmarks/base", abs_contained)
+        self.assertEqual(resolved_abs, abs_contained)
+
+        # Unsafe paths outside ROOT raise UNSAFE_PATH
+        self.assertReason("UNSAFE_PATH", vx.resolve_destination, ROOT, self.c, "benchmarks/base", Path("../../outside"))
+        self.assertReason("UNSAFE_PATH", vx.resolve_destination, ROOT, self.c, "benchmarks/base", Path("C:/Windows/System32"))
+
+        # Default fallback when custom is None
+        default = vx.resolve_destination(ROOT, self.c, "benchmarks/base", None)
+        self.assertEqual(default, vx.run_directory(ROOT, self.c, "benchmarks/base"))
+
+        # Existing destination raises OUTPUT_ALREADY_EXISTS
+        existing_dest = self.path / "collision_test"
+        existing_dest.mkdir()
+        self.assertReason("OUTPUT_ALREADY_EXISTS", vx.new_directory, existing_dest)
 
 
 if __name__ == "__main__":
