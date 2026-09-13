@@ -668,7 +668,7 @@ class ExperimentTests(unittest.TestCase):
 
         # Unsafe paths outside ROOT raise UNSAFE_PATH
         self.assertReason("UNSAFE_PATH", vx.resolve_destination, ROOT, self.c, "benchmarks/base", Path("../../outside"))
-        self.assertReason("UNSAFE_PATH", vx.resolve_destination, ROOT, self.c, "benchmarks/base", Path("C:/Windows/System32"))
+        self.assertReason("UNSAFE_PATH", vx.resolve_destination, ROOT, self.c, "benchmarks/base", ROOT.parent / "outside")
 
         # Default fallback when custom is None
         default = vx.resolve_destination(ROOT, self.c, "benchmarks/base", None)
