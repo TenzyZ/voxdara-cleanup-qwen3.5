@@ -1,0 +1,14 @@
+{
+  "description": "Read-only boundary for a dedicated Voxdara review session, including subagents.",
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": ".*",
+      "hooks": [{
+        "type": "command",
+        "command": "python",
+        "args": ["-B", "${CLAUDE_PLUGIN_ROOT}/hooks/read_only.py"],
+        "timeout": 10
+      }]
+    }]
+  }
+}
