@@ -1,0 +1,31 @@
+{
+  "model_repository": "Qwen/Qwen3.5-0.8B",
+  "model_revision": "2fc06364715b967f1860aea9cf38778875588b17",
+  "model_id": "Qwen_Qwen3.5-0.8B__project-voxdara-trainv2-lora-r16a16-e2-run1_1789322810",
+  "role": "base",
+  "adapter_sha256": null,
+  "runtime": {
+    "name": "Unsloth Studio installed outer runtime",
+    "versions": {
+      "torch": "2.11.0+cu130",
+      "transformers": "5.5.0",
+      "trl": "0.23.1",
+      "peft": "0.18.1",
+      "unsloth": "2026.9.4",
+      "unsloth_zoo": "2026.9.3",
+      "bitsandbytes": "0.50.2",
+      "accelerate": "1.15.0",
+      "datasets": "4.3.0",
+      "xformers": "0.0.35",
+      "python": "3.13.14",
+      "cuda": "13.0"
+    },
+    "studio_server_pid": 11308,
+    "endpoint": "http://127.0.0.1:8888/v1/chat/completions",
+    "identity_basis": "carried-forward verified installed Studio runtime; same running Studio and loaded final adapter for both arms",
+    "installed_inference_source_hashes": {
+      "studio/backend/models/inference.py": "A4571C9C9B4F92DCDC7B544E9338F39F09090E4EF85B21555230D1104D64E34D",
+      "studio/backend/routes/inference.py": "DE8F7093C239E5CAB8BCAED7BDBC8FD86949CD3CBA99A763EC4C43C03A57F2C5"
+    }
+  }
+}

@@ -1,0 +1,450 @@
+{
+  "contract_sha256": "1E6A4296A87541E119D6C73B2316CB6D421DFE2AFC85F88D3DF2733AE9886678",
+  "mapping": [
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "CMD-001"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "CMD-002"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "CMD-003"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "CS-001"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "CS-002"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "CS-003"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "CS-004"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "CS-005"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "CS-006"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "CS-007"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "CS-008"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "HI-001"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "HI-002"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "HI-003"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "HI-004"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "HI-005"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "HI-006"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "HI-007"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "MIN-001"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "MIN-002"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "MIN-003"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "MIN-004"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "MIN-005"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "MIN-006"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "MIN-007"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "MIN-008"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "MIN-009"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "MIN-010"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "NE-001"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "NE-002"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "NE-003"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "NE-004"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "NE-005"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "NE-006"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "NE-007"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "NE-008"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "QA-001"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "QA-002"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "QA-003"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "SC-001"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "SC-002"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "SC-003"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "SC-004"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "SC-005"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "SC-006"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "SC-007"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "SC-008"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "SC-009"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "SC-010"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "SC-011"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "SC-012"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "SC-013"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "SC-014"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "SC-015"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "TECH-001"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "TECH-002"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "TECH-003"
+    },
+    {
+      "A_source": 0,
+      "B_source": 1,
+      "id": "TECH-004"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "TECH-005"
+    },
+    {
+      "A_source": 1,
+      "B_source": 0,
+      "id": "TECH-006"
+    }
+  ],
+  "python": "3.14.5",
+  "randomization": "Python random.Random(seed).shuffle per ID in sorted order",
+  "seed": 3407,
+  "sources": [
+    {
+      "directory": "C:\\Projects\\Voxdara\\experiments\\train-run-v1\\runs\\voxdara-trainv2-lora-r16a16-e2-run1\\benchmarks\\eval-v1.1\\base",
+      "provenance": {
+        "authorization_basis": "explicit human launch of benchmark command",
+        "contract_sha256": "1E6A4296A87541E119D6C73B2316CB6D421DFE2AFC85F88D3DF2733AE9886678",
+        "endpoint": "http://127.0.0.1:8888/v1/chat/completions",
+        "eval_sha256": "116443FC3A6332DDB3D0250B60F02B524C745AE1836B4174D9E700783278814A",
+        "experiment_id": "voxdara-trainv2-lora-r16a16-e2-run1",
+        "generation": {
+          "max_tokens": 256,
+          "min_p": 0,
+          "presence_penalty": 0,
+          "repetition_penalty": 1.0,
+          "temperature": 0,
+          "top_k": 20,
+          "top_p": 0.8
+        },
+        "prompt_sha256": "6BA7FD9E1EA544BA4E8BD3F5E5B974CE118EBA7B8925449E3B4399D6F1564D6D",
+        "schema_version": 1,
+        "serving": {
+          "adapter_sha256": null,
+          "candidate_step": null,
+          "identity_verification": "operator_supplied; not proof of server checkpoint bytes",
+          "model_id": "voxdara-eval-v1.1-step126",
+          "model_repository": "Qwen/Qwen3.5-0.8B",
+          "model_revision": "2fc06364715b967f1860aea9cf38778875588b17",
+          "role": "base",
+          "runtime": {
+            "endpoint": "http://127.0.0.1:8888/v1/chat/completions",
+            "execution_control": "stop before next request after a recorded API/transport/schema failure; no retries",
+            "identity_basis": "verified local pinned snapshot metadata, byte-identical final adapter, successful staged load, current protected Studio status; no generation-based identity claim",
+            "installed_inference_source_hashes": {
+              "studio/backend/models/inference.py": "A4571C9C9B4F92DCDC7B544E9338F39F09090E4EF85B21555230D1104D64E34D",
+              "studio/backend/routes/inference.py": "DE8F7093C239E5CAB8BCAED7BDBC8FD86949CD3CBA99A763EC4C43C03A57F2C5"
+            },
+            "load_in_4bit": false,
+            "max_seq_length": 2048,
+            "name": "Verified installed Unsloth Studio local/offline staged step-126 runtime",
+            "offline_flags": {
+              "HF_DATASETS_OFFLINE": "1",
+              "HF_HUB_DISABLE_TELEMETRY": "1",
+              "HF_HUB_OFFLINE": "1",
+              "TRANSFORMERS_OFFLINE": "1"
+            },
+            "original_adapter_path": "C:\\Users\\hp\\.unsloth\\studio\\outputs\\Qwen_Qwen3.5-0.8B__project-voxdara-trainv2-lora-r16a16-e2-run1_1789322810",
+            "pinned_base_snapshot": "C:\\Users\\hp\\.cache\\huggingface\\hub\\models--Qwen--Qwen3.5-0.8B\\snapshots\\2fc06364715b967f1860aea9cf38778875588b17",
+            "request_timeout_seconds": 300,
+            "runtime_adapter_path": "C:\\Users\\hp\\.unsloth\\studio\\staging\\voxdara-eval-v1.1-step126",
+            "runtime_adapter_weights_sha256": "E4348C9098F62843371BD00247790B428EC3E8332E3C3CE2337DE72BF3138085",
+            "studio_server_pid": 35264,
+            "versions": {
+              "accelerate": "1.15.0",
+              "bitsandbytes": "0.50.2",
+              "datasets": "4.3.0",
+              "peft": "0.18.1",
+              "torch": "2.11.0+cu130",
+              "transformers": "5.5.0",
+              "trl": "0.23.1",
+              "unsloth": "2026.9.4",
+              "unsloth_zoo": "2026.9.3",
+              "xformers": "0.0.35"
+            }
+          }
+        },
+        "thinking_disabled": true,
+        "timestamp_utc": "2026-09-13T21:45:21.482412+00:00",
+        "tool_sha256": "035F6ACFDE513E011985AD80C88C8F7099F94E9B9C1B16D057911003F036F4D1"
+      },
+      "results_sha256": "ED244FDE7A9D8B8EFFB41BC09A4CA5F76D2F878C2C3C343FD623A53612F0A7D9"
+    },
+    {
+      "directory": "C:\\Projects\\Voxdara\\experiments\\train-run-v1\\runs\\voxdara-trainv2-lora-r16a16-e2-run1\\benchmarks\\eval-v1.1\\lora",
+      "provenance": {
+        "authorization_basis": "explicit human launch of benchmark command",
+        "contract_sha256": "1E6A4296A87541E119D6C73B2316CB6D421DFE2AFC85F88D3DF2733AE9886678",
+        "endpoint": "http://127.0.0.1:8888/v1/chat/completions",
+        "eval_sha256": "116443FC3A6332DDB3D0250B60F02B524C745AE1836B4174D9E700783278814A",
+        "experiment_id": "voxdara-trainv2-lora-r16a16-e2-run1",
+        "generation": {
+          "max_tokens": 256,
+          "min_p": 0,
+          "presence_penalty": 0,
+          "repetition_penalty": 1.0,
+          "temperature": 0,
+          "top_k": 20,
+          "top_p": 0.8
+        },
+        "prompt_sha256": "6BA7FD9E1EA544BA4E8BD3F5E5B974CE118EBA7B8925449E3B4399D6F1564D6D",
+        "schema_version": 1,
+        "serving": {
+          "adapter_sha256": "E4348C9098F62843371BD00247790B428EC3E8332E3C3CE2337DE72BF3138085",
+          "candidate_step": 126,
+          "identity_verification": "operator_supplied; not proof of server checkpoint bytes",
+          "model_id": "voxdara-eval-v1.1-step126",
+          "model_repository": "Qwen/Qwen3.5-0.8B",
+          "model_revision": "2fc06364715b967f1860aea9cf38778875588b17",
+          "role": "lora",
+          "runtime": {
+            "endpoint": "http://127.0.0.1:8888/v1/chat/completions",
+            "execution_control": "stop before next request after a recorded API/transport/schema failure; no retries",
+            "identity_basis": "verified local pinned snapshot metadata, byte-identical final adapter, successful staged load, current protected Studio status; no generation-based identity claim",
+            "installed_inference_source_hashes": {
+              "studio/backend/models/inference.py": "A4571C9C9B4F92DCDC7B544E9338F39F09090E4EF85B21555230D1104D64E34D",
+              "studio/backend/routes/inference.py": "DE8F7093C239E5CAB8BCAED7BDBC8FD86949CD3CBA99A763EC4C43C03A57F2C5"
+            },
+            "load_in_4bit": false,
+            "max_seq_length": 2048,
+            "name": "Verified installed Unsloth Studio local/offline staged step-126 runtime",
+            "offline_flags": {
+              "HF_DATASETS_OFFLINE": "1",
+              "HF_HUB_DISABLE_TELEMETRY": "1",
+              "HF_HUB_OFFLINE": "1",
+              "TRANSFORMERS_OFFLINE": "1"
+            },
+            "original_adapter_path": "C:\\Users\\hp\\.unsloth\\studio\\outputs\\Qwen_Qwen3.5-0.8B__project-voxdara-trainv2-lora-r16a16-e2-run1_1789322810",
+            "pinned_base_snapshot": "C:\\Users\\hp\\.cache\\huggingface\\hub\\models--Qwen--Qwen3.5-0.8B\\snapshots\\2fc06364715b967f1860aea9cf38778875588b17",
+            "request_timeout_seconds": 300,
+            "runtime_adapter_path": "C:\\Users\\hp\\.unsloth\\studio\\staging\\voxdara-eval-v1.1-step126",
+            "runtime_adapter_weights_sha256": "E4348C9098F62843371BD00247790B428EC3E8332E3C3CE2337DE72BF3138085",
+            "studio_server_pid": 35264,
+            "versions": {
+              "accelerate": "1.15.0",
+              "bitsandbytes": "0.50.2",
+              "datasets": "4.3.0",
+              "peft": "0.18.1",
+              "torch": "2.11.0+cu130",
+              "transformers": "5.5.0",
+              "trl": "0.23.1",
+              "unsloth": "2026.9.4",
+              "unsloth_zoo": "2026.9.3",
+              "xformers": "0.0.35"
+            }
+          }
+        },
+        "thinking_disabled": true,
+        "timestamp_utc": "2026-09-13T21:47:37.925487+00:00",
+        "tool_sha256": "035F6ACFDE513E011985AD80C88C8F7099F94E9B9C1B16D057911003F036F4D1"
+      },
+      "results_sha256": "EA79D9EFD23E7E360C79D76FFF6BE8DC87363A5738B3D0663FF6671E6BAB9E4B"
+    }
+  ]
+}

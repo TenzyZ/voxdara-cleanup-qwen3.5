@@ -1,0 +1,17 @@
+{
+  "pairwise_preference_values": [
+    "A",
+    "B",
+    "tie"
+  ],
+  "rating_values": [
+    "acceptable",
+    "minor_defect",
+    "unacceptable"
+  ],
+  "reason_code": "human-entered; critical failure codes from contract or concise defect code",
+  "regression_flag_values": [
+    true,
+    false
+  ]
+}
