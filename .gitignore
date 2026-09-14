@@ -21,3 +21,15 @@ venv/
 
 # Logs
 *.log
+
+# Local agent state and downloaded agent skill
+/.codex/
+/.agents/skills/huggingface-llm-trainer/
+
+# Model weights and training-state artifacts; run evidence remains trackable
+*.safetensors
+*.gguf
+*.pt
+*.pth
+training_args.bin
+checkpoint-*/
