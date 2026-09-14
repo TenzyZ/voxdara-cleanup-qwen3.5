@@ -1,0 +1,55 @@
+{
+  "authorization_basis": "explicit human launch of benchmark command",
+  "contract_sha256": "1E6A4296A87541E119D6C73B2316CB6D421DFE2AFC85F88D3DF2733AE9886678",
+  "credential_present": true,
+  "endpoint": "http://127.0.0.1:8888/v1/chat/completions",
+  "eval_sha256": "116443FC3A6332DDB3D0250B60F02B524C745AE1836B4174D9E700783278814A",
+  "experiment_id": "voxdara-trainv2-lora-r16a16-e2-run1",
+  "generation": {
+    "max_tokens": 256,
+    "min_p": 0,
+    "presence_penalty": 0,
+    "repetition_penalty": 1.0,
+    "temperature": 0,
+    "top_k": 20,
+    "top_p": 0.8
+  },
+  "prompt_sha256": "6BA7FD9E1EA544BA4E8BD3F5E5B974CE118EBA7B8925449E3B4399D6F1564D6D",
+  "schema_version": 1,
+  "serving": {
+    "adapter_sha256": null,
+    "candidate_step": null,
+    "identity_verification": "operator_supplied; not proof of server checkpoint bytes",
+    "model_id": "Qwen_Qwen3.5-0.8B__project-voxdara-trainv2-lora-r16a16-e2-run1_1789322810",
+    "model_repository": "Qwen/Qwen3.5-0.8B",
+    "model_revision": "2fc06364715b967f1860aea9cf38778875588b17",
+    "role": "base",
+    "runtime": {
+      "endpoint": "http://127.0.0.1:8888/v1/chat/completions",
+      "identity_basis": "carried-forward verified installed Studio runtime; same running Studio and loaded final adapter for both arms",
+      "installed_inference_source_hashes": {
+        "studio/backend/models/inference.py": "A4571C9C9B4F92DCDC7B544E9338F39F09090E4EF85B21555230D1104D64E34D",
+        "studio/backend/routes/inference.py": "DE8F7093C239E5CAB8BCAED7BDBC8FD86949CD3CBA99A763EC4C43C03A57F2C5"
+      },
+      "name": "Unsloth Studio installed outer runtime",
+      "studio_server_pid": 11308,
+      "versions": {
+        "accelerate": "1.15.0",
+        "bitsandbytes": "0.50.2",
+        "cuda": "13.0",
+        "datasets": "4.3.0",
+        "peft": "0.18.1",
+        "python": "3.13.14",
+        "torch": "2.11.0+cu130",
+        "transformers": "5.5.0",
+        "trl": "0.23.1",
+        "unsloth": "2026.9.4",
+        "unsloth_zoo": "2026.9.3",
+        "xformers": "0.0.35"
+      }
+    }
+  },
+  "thinking_disabled": true,
+  "timestamp_utc": "2026-09-13T19:01:16.696880+00:00",
+  "tool_sha256": "BC0FF6898224C26ED056AE82DACE0421620CEC509A641472CD02E848281F27D2"
+}

@@ -1,0 +1,166 @@
+{
+  "api_errors": 0,
+  "boundary_constraint_passes": 23,
+  "cases": 60,
+  "categories": {
+    "code_switching": {
+      "api_errors": 0,
+      "boundary_constraint_passes": 3,
+      "cases": 8,
+      "exact_matches": 1,
+      "legacy_constraint_passes": 3,
+      "legacy_false_negatives": 0,
+      "outputs": 8,
+      "truncations": 0
+    },
+    "command_preservation": {
+      "api_errors": 0,
+      "boundary_constraint_passes": 1,
+      "cases": 3,
+      "exact_matches": 0,
+      "legacy_constraint_passes": 1,
+      "legacy_false_negatives": 0,
+      "outputs": 3,
+      "truncations": 0
+    },
+    "minimal_change": {
+      "api_errors": 0,
+      "boundary_constraint_passes": 7,
+      "cases": 10,
+      "exact_matches": 2,
+      "legacy_constraint_passes": 7,
+      "legacy_false_negatives": 0,
+      "outputs": 10,
+      "truncations": 0
+    },
+    "question_preservation": {
+      "api_errors": 0,
+      "boundary_constraint_passes": 1,
+      "cases": 3,
+      "exact_matches": 0,
+      "legacy_constraint_passes": 1,
+      "legacy_false_negatives": 0,
+      "outputs": 3,
+      "truncations": 1
+    },
+    "romanized_hindi": {
+      "api_errors": 0,
+      "boundary_constraint_passes": 3,
+      "cases": 7,
+      "exact_matches": 1,
+      "legacy_constraint_passes": 3,
+      "legacy_false_negatives": 0,
+      "outputs": 7,
+      "truncations": 1
+    },
+    "romanized_nepali": {
+      "api_errors": 0,
+      "boundary_constraint_passes": 6,
+      "cases": 8,
+      "exact_matches": 0,
+      "legacy_constraint_passes": 6,
+      "legacy_false_negatives": 0,
+      "outputs": 8,
+      "truncations": 0
+    },
+    "self_correction": {
+      "api_errors": 0,
+      "boundary_constraint_passes": 0,
+      "cases": 15,
+      "exact_matches": 0,
+      "legacy_constraint_passes": 0,
+      "legacy_false_negatives": 0,
+      "outputs": 15,
+      "truncations": 0
+    },
+    "technical_preservation": {
+      "api_errors": 0,
+      "boundary_constraint_passes": 2,
+      "cases": 6,
+      "exact_matches": 0,
+      "legacy_constraint_passes": 2,
+      "legacy_false_negatives": 0,
+      "outputs": 6,
+      "truncations": 0
+    }
+  },
+  "constraint_passes": 23,
+  "exact_matches": 4,
+  "latency": {
+    "mean_seconds": 2.2728358633326327,
+    "observations": 60,
+    "p95_seconds": 10.234081399976276
+  },
+  "legacy_constraint_passes": 23,
+  "legacy_false_negatives": 0,
+  "outputs": 60,
+  "provenance": {
+    "authorization_basis": "explicit human launch of benchmark command",
+    "contract_sha256": "1E6A4296A87541E119D6C73B2316CB6D421DFE2AFC85F88D3DF2733AE9886678",
+    "credential_present": true,
+    "endpoint": "http://127.0.0.1:8888/v1/chat/completions",
+    "eval_sha256": "116443FC3A6332DDB3D0250B60F02B524C745AE1836B4174D9E700783278814A",
+    "experiment_id": "voxdara-trainv2-lora-r16a16-e2-run1",
+    "generation": {
+      "max_tokens": 256,
+      "min_p": 0,
+      "presence_penalty": 0,
+      "repetition_penalty": 1.0,
+      "temperature": 0,
+      "top_k": 20,
+      "top_p": 0.8
+    },
+    "prompt_sha256": "6BA7FD9E1EA544BA4E8BD3F5E5B974CE118EBA7B8925449E3B4399D6F1564D6D",
+    "schema_version": 1,
+    "serving": {
+      "adapter_sha256": null,
+      "candidate_step": null,
+      "identity_verification": "operator_supplied; not proof of server checkpoint bytes",
+      "model_id": "voxdara-eval-v1.1-step126",
+      "model_repository": "Qwen/Qwen3.5-0.8B",
+      "model_revision": "2fc06364715b967f1860aea9cf38778875588b17",
+      "role": "base",
+      "runtime": {
+        "endpoint": "http://127.0.0.1:8888/v1/chat/completions",
+        "execution_control": "stop before next request after a recorded API/transport/schema failure; no retries",
+        "identity_basis": "verified local pinned snapshot metadata, byte-identical final adapter, successful staged load, current protected Studio status; no generation-based identity claim",
+        "installed_inference_source_hashes": {
+          "studio/backend/models/inference.py": "A4571C9C9B4F92DCDC7B544E9338F39F09090E4EF85B21555230D1104D64E34D",
+          "studio/backend/routes/inference.py": "DE8F7093C239E5CAB8BCAED7BDBC8FD86949CD3CBA99A763EC4C43C03A57F2C5"
+        },
+        "load_in_4bit": false,
+        "max_seq_length": 2048,
+        "name": "Verified installed Unsloth Studio local/offline staged step-126 runtime",
+        "offline_flags": {
+          "HF_DATASETS_OFFLINE": "1",
+          "HF_HUB_DISABLE_TELEMETRY": "1",
+          "HF_HUB_OFFLINE": "1",
+          "TRANSFORMERS_OFFLINE": "1"
+        },
+        "original_adapter_path": "C:\\Users\\hp\\.unsloth\\studio\\outputs\\Qwen_Qwen3.5-0.8B__project-voxdara-trainv2-lora-r16a16-e2-run1_1789322810",
+        "pinned_base_snapshot": "C:\\Users\\hp\\.cache\\huggingface\\hub\\models--Qwen--Qwen3.5-0.8B\\snapshots\\2fc06364715b967f1860aea9cf38778875588b17",
+        "request_timeout_seconds": 300,
+        "runtime_adapter_path": "C:\\Users\\hp\\.unsloth\\studio\\staging\\voxdara-eval-v1.1-step126",
+        "runtime_adapter_weights_sha256": "E4348C9098F62843371BD00247790B428EC3E8332E3C3CE2337DE72BF3138085",
+        "studio_server_pid": 35264,
+        "versions": {
+          "accelerate": "1.15.0",
+          "bitsandbytes": "0.50.2",
+          "datasets": "4.3.0",
+          "peft": "0.18.1",
+          "torch": "2.11.0+cu130",
+          "transformers": "5.5.0",
+          "trl": "0.23.1",
+          "unsloth": "2026.9.4",
+          "unsloth_zoo": "2026.9.3",
+          "xformers": "0.0.35"
+        }
+      }
+    },
+    "thinking_disabled": true,
+    "timestamp_utc": "2026-09-13T21:45:21.482412+00:00",
+    "tool_sha256": "035F6ACFDE513E011985AD80C88C8F7099F94E9B9C1B16D057911003F036F4D1"
+  },
+  "semantic_review": "NOT_VERIFIED",
+  "truncations": 2
+}

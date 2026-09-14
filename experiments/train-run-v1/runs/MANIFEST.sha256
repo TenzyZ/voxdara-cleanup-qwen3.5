@@ -1,0 +1,25 @@
+# SHA-256 of all 15 frozen local evidence files; paths are repository-root relative.
+# MANIFEST.sha256 excludes itself. Verify from the repository root.
+9820174D4C10E5C90F39EE85D8E294A6A060E8DF4D7CFD5E5553855B50CE91F2  experiments/train-run-v1/runs/voxdara-trainv2-lora-r16a16-e2-run1/base-serving-provenance.json
+CCDC270A799CAD6BC059947CE6EF5B772F7F116145CF328149AE8DBE921A365D  experiments/train-run-v1/runs/voxdara-trainv2-lora-r16a16-e2-run1/benchmarks/base/provenance.json
+7A6C1B23F4B85247ACDE8377064B1C09057D5C382740EA6ADEAB0FF7A122CA74  experiments/train-run-v1/runs/voxdara-trainv2-lora-r16a16-e2-run1/benchmarks/base/results.jsonl
+86059814E1DA216E0EEA372270AE5B89182C4FEDF77CA3B65C105B51728A2A0D  experiments/train-run-v1/runs/voxdara-trainv2-lora-r16a16-e2-run1/benchmarks/eval-v1.1/base/provenance.json
+ED244FDE7A9D8B8EFFB41BC09A4CA5F76D2F878C2C3C343FD623A53612F0A7D9  experiments/train-run-v1/runs/voxdara-trainv2-lora-r16a16-e2-run1/benchmarks/eval-v1.1/base/results.jsonl
+EE422B8035E9C2A1045A8D97156C23CB6A6A737166CB915BE20BCB794299B0EF  experiments/train-run-v1/runs/voxdara-trainv2-lora-r16a16-e2-run1/benchmarks/eval-v1.1/base/summary.json
+08A0C37FBBE1DDD1AA5DB88D29721E7DFD77779015DE8A5D7A66A5248E7F583C  experiments/train-run-v1/runs/voxdara-trainv2-lora-r16a16-e2-run1/benchmarks/eval-v1.1/lora/provenance.json
+EA79D9EFD23E7E360C79D76FFF6BE8DC87363A5738B3D0663FF6671E6BAB9E4B  experiments/train-run-v1/runs/voxdara-trainv2-lora-r16a16-e2-run1/benchmarks/eval-v1.1/lora/results.jsonl
+8FB3D950A01FB00DE356CD73DF4819921AC66512D8052712FF3088D10FB1D2F8  experiments/train-run-v1/runs/voxdara-trainv2-lora-r16a16-e2-run1/benchmarks/eval-v1.1/lora/summary.json
+CC19EB1001B890F401C35216C5EE4D6E4FCF6EE3A6677EE5A9165A135E5BD42E  experiments/train-run-v1/runs/voxdara-trainv2-lora-r16a16-e2-run1/blind-review-v1.1/key/identity_key.json
+ABA0B564DFCF8B767E08A1B87902C85E2676A35EC672A0482529448983A0B441  experiments/train-run-v1/runs/voxdara-trainv2-lora-r16a16-e2-run1/blind-review-v1.1/review/review.jsonl
+CE4120028396195895D9709BF2BB6010944C6A08865FEA2B8C90A6260C027DB7  experiments/train-run-v1/runs/voxdara-trainv2-lora-r16a16-e2-run1/blind-review-v1.1/review/review.pre-repair-CE412002.jsonl
+29DC3BA251D7CB98C626E0FEF49368F629349DFDE459BC36FEE23451A08B1844  experiments/train-run-v1/runs/voxdara-trainv2-lora-r16a16-e2-run1/blind-review-v1.1/review/review_schema.json
+2815DA0489F46C1584406AA5B9B2393876245B79033A6D5AF98DFE1FA2D717AA  experiments/train-run-v1/runs/voxdara-trainv2-lora-r16a16-e2-run1/lora-serving-provenance.json
+1808DD4AC3C88C28B260D3D10B08708718A052B6B14B4CE4CC997E734A4CB0C1  experiments/train-run-v1/runs/voxdara-trainv2-lora-r16a16-e2-run1/run.json
+
+# External artifact metadata only; not a local checksum entry.
+# file: adapter_model.safetensors
+# size: 25,587,104 bytes
+# SHA-256: E4348C9098F62843371BD00247790B428EC3E8332E3C3CE2337DE72BF3138085
+# destination: future Hugging Face publication, not yet published
+# base_model: Qwen/Qwen3.5-0.8B
+# base_revision: 2fc06364715b967f1860aea9cf38778875588b17
