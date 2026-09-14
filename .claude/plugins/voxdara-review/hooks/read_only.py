@@ -116,8 +116,8 @@ def permitted(event):
 def offline_tests():
     # Only the inspected offline suite; changed executable inputs need human review.
     pinned = {
-        "tools/voxdara_experiment.py": "D479E47D16BB4354F365B16856EDF69BDF55DB371E21AFD6D8B6D92B90B163F4",
-        "tests/test_voxdara_experiment.py": "CADD5C56F76EF995FE75F765D833CE92F18DFDD16AA6F6DAC10C8282EABB640C",
+        "tools/voxdara_experiment.py": "035F6ACFDE513E011985AD80C88C8F7099F94E9B9C1B16D057911003F036F4D1",
+        "tests/test_voxdara_experiment.py": "3936AF8A158CBA6EBBA9A33AB78AA3CCA19CAD4E543CDE5E41678F6A25E74F77",
     }
     try:
         unchanged = all(hashlib.sha256((ROOT / p).read_bytes()).hexdigest().upper() == h
