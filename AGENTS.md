@@ -137,9 +137,9 @@ Base and post-LoRA evaluation must use the same inference contract:
 
 Do not change benchmark settings between Base and LoRA evaluation.
 
-## Verified Base Benchmark
+## Historical Base Benchmark
 
-The untouched post-trained model has completed the frozen 60-case baseline.
+The untouched post-trained model completed this historical 60-case benchmark; its incomplete provenance prevents treating it as the finalized comparable baseline.
 
 Recorded result:
 
@@ -161,34 +161,19 @@ Human review found important failures that mechanical checks sometimes missed, i
 - command/content deletion
 - unwanted translation or rewriting
 
-The first trained candidate must be compared against this exact baseline.
+Preserve this benchmark as historical evidence. The completed Eval v1.1 Base/LoRA pair is the relevant finalized comparison; see `experiments/train-run-v1/ACCEPTANCE.md`.
 
-## Current Objective
+## Current Model State
 
-Design the first serious Voxdara Train v2 LoRA experiment.
+Train Run v1 and its Eval v1.1 comparison are complete. Step 126 is the human-accepted frozen candidate for product integration: `ACCEPT STEP 126 FOR PRODUCT INTEGRATION`.
 
-Do not start GPU training merely because a plan has been produced.
+Formal Eval v1.1 status remains `FINAL_CLASSIFICATION_REQUIRES_HUMAN_DECISION`; review provenance is `AI_ASSISTED_BLIND_SEMANTIC_REVIEW`.
 
-The currently accepted direction is:
+See `experiments/train-run-v1/ACCEPTANCE.md`, `LIMITATIONS.md`, and `runs/MANIFEST.sha256` for closeout decisions and frozen evidence.
 
-- model: `Qwen/Qwen3.5-0.8B`
-- training data: frozen Train v2
-- method: BF16 / 16-bit LoRA SFT
+The frozen candidate uses `Qwen/Qwen3.5-0.8B`, Train v2, BF16 / 16-bit LoRA, rank/alpha 16, and no 4-bit loading. Training sequence length is 256; eval/serving sequence length is 2048; generation max tokens is 256.
 
-Previously successful smoke-run values provide an experimental starting point, not a frozen serious-run configuration:
-
-- context: around `2048`
-- batch size: `1`
-- gradient accumulation: `4`
-- LoRA rank: `16`
-- LoRA alpha: `16`
-- LoRA dropout: `0`
-- learning rate: around `2e-4`
-- epoch search range: approximately `1–3`
-
-Do not repeat the old 10-epoch smoke run as the serious configuration.
-
-The serious configuration must be justified from evidence, hardware feasibility, dataset size, and current runtime behavior.
+No retraining, new inference, checkpoint selection, quantization, or model publication is currently authorized. Future work requires explicit scoped authorization.
 
 ## Experiment Discipline
 

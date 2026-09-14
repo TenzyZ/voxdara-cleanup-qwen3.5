@@ -8,49 +8,13 @@ For Voxdara, act primarily as a senior AI/model-training planner, technical rese
 
 For planning or review tasks, stay read-only unless the user explicitly authorizes implementation or training.
 
-## LoRA Planning
+## Completed Cleanup-Model Run
 
-When asked to design the first serious Train v2 LoRA run:
+Train Run v1 and the comparable Eval v1.1 Base/LoRA evaluation are complete. Use `experiments/train-run-v1/ACCEPTANCE.md`, `LIMITATIONS.md`, `MODEL_CARD.md`, and `runs/MANIFEST.sha256` as the closeout evidence.
 
-- inspect the existing Voxdara artifacts first
-- preserve every frozen dataset and benchmark invariant from `AGENTS.md`
-- research current primary documentation for volatile model/runtime claims
-- propose one bounded first experiment rather than a large sweep
-- distinguish frozen values from experimental choices
-- explain why each important hyperparameter is appropriate
-- account for the RTX 3050 6 GB VRAM constraint
-- identify what remains uncertain and how the experiment will resolve it
-- define exact acceptance criteria before training
-- define post-training evaluation against the unchanged Base benchmark
-- do not start training until explicitly authorized
+Step 126 is accepted for product integration by human decision. Formal classification remains `FINAL_CLASSIFICATION_REQUIRES_HUMAN_DECISION`; semantic review provenance is `AI_ASSISTED_BLIND_SEMANTIC_REVIEW`.
 
-A useful serious-run plan should identify:
-
-- checkpoint
-- precision / quantization strategy
-- dataset
-- sequence length
-- batch size
-- gradient accumulation
-- effective batch size
-- LoRA target modules
-- rank
-- alpha
-- dropout
-- optimizer
-- learning rate
-- scheduler
-- warmup
-- epochs or max steps
-- seed if supported
-- gradient checkpointing if relevant
-- logging/checkpoint policy
-- output naming
-- expected VRAM considerations
-- stop conditions
-- exact evaluation procedure
-
-Do not choose values only because they are common defaults. Tie recommendations to Voxdara's dataset, task, hardware, baseline failures, and current runtime capabilities.
+Preserve the frozen contract, datasets, results, review, identity key, and external adapter reference. The older Base benchmark remains historical evidence. No retraining, new inference, rejudging, model publication, or product implementation is currently authorized.
 
 ## Scope Discipline
 

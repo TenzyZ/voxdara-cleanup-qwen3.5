@@ -77,4 +77,10 @@ Every core experimental invariant remains unchanged:
 
 ## Evaluation Status
 
-Neither Base Eval v1.1 nor LoRA Eval v1.1 has been run. The LoRA adapter has not yet been benchmarked or scored under this protocol. All evaluations require explicit human launch authorization.
+Base Eval v1.1 completed (60 cases). LoRA Eval v1.1 completed (60 cases). Blind semantic review completed with provenance `AI_ASSISTED_BLIND_SEMANTIC_REVIEW`.
+
+The repaired review is frozen at SHA-256 `ABA0B564DFCF8B767E08A1B87902C85E2676A35EC672A0482529448983A0B441`; the pre-repair review remains preserved.
+
+Formal classification: `FINAL_CLASSIFICATION_REQUIRES_HUMAN_DECISION`.
+
+The separate human product acceptance is recorded in [ACCEPTANCE.md](../experiments/train-run-v1/ACCEPTANCE.md).
